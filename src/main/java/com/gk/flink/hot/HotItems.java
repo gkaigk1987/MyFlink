@@ -17,6 +17,16 @@ import java.net.URL;
  * @Description: 如何计算实时热门商品
  * @Author: GK
  * @Date: 2019/12/25
+ *
+ * 如何基于 EventTime 处理，如何指定 Watermark
+ * 如何使用 Flink 灵活的 Window API
+ * 何时需要用到 State，以及如何使用
+ * 如何使用 ProcessFunction 实现 TopN 功能
+ *
+ * 抽取出业务时间戳，告诉 Flink 框架基于业务时间做窗口
+ * 过滤出点击行为数据
+ * 按一小时的窗口大小，每5分钟统计一次，做滑动窗口聚合（Sliding Window）
+ * 按每个窗口聚合，输出每个窗口中点击量前N名的商品
  */
 public class HotItems {
 
