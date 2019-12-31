@@ -22,8 +22,15 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-kafka-0.11_${scala.binary.version}</artifactId>
+            <!--<artifactId>flink-connector-kafka-0.11_${scala.binary.version}</artifactId>-->
+            <artifactId>flink-connector-kafka_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
+            <!--<exclusions>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-clients</artifactId>
+                </exclusion>
+            </exclusions>-->
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -31,6 +38,25 @@
             <version>${flink.version}</version>
             <!--<scope>provided</scope>-->
         </dependency>
+
+        <!--<dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.13</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.4.0</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.62</version>
+        </dependency>
+
         <!--加入下面两个依赖才会出现 Flink 的日志出来-->
         <dependency>
             <groupId>org.slf4j</groupId>
