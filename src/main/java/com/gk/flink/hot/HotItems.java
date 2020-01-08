@@ -48,7 +48,9 @@ public class HotItems {
         PojoCsvInputFormat<UserBehavior> csvInput = new PojoCsvInputFormat<>(filePath, pojoTypeInfo, fieldOrder);
         env.createInput(csvInput,pojoTypeInfo)  // 创建数据源，得到 UserBehavior 类型的 DataStream
             .assignTimestampsAndWatermarks(new AscendingTimestampExtractor<UserBehavior>() {
-                // 抽取出时间和生成 watermark
+                // 抽取出时间和生成 watermark， 数据源的数据已经经过整理，没有乱序，
+                // 即事件的时间戳是单调递增的，所以可以将每条数据的业务时间就当做 Watermark
+                // 注：真实业务场景一般都是存在乱序的，所以一般使用 BoundedOutOfOrdernessTimestampExtractor
                 @Override
                 public long extractAscendingTimestamp(UserBehavior element) {
                     // 原始数据单位秒，将其转成毫秒
