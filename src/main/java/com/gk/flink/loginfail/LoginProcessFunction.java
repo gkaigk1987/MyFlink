@@ -41,7 +41,7 @@ public class LoginProcessFunction extends KeyedProcessFunction<Integer, LoginEve
             Iterator<LoginEvent> iterator = loginState.get().iterator();
             if(iterator.hasNext()) {
                 LoginEvent lastFail = iterator.next();
-                if(value.getEventTime() <= lastFail.getEventTime() + 2) {
+                if(value.getEventTime() <= lastFail.getEventTime() + timeDurable) {
                     out.collect(new LoginWarning(value.getUserId(),value.getUserIp(),lastFail.getEventTime(),value.getEventTime(),"该用户两秒内登录失败"));
                 }
                 // 清空状态中的值
