@@ -17,7 +17,7 @@ import java.net.URL;
  */
 public class AdStatisticsByGeo {
 
-    private static OutputTag<BlackListWarning> blackListWarningOutputTag = new OutputTag<>("blackList");
+    private static OutputTag<BlackListWarning> blackListWarningOutputTag = new OutputTag<BlackListWarning>("blackList"){};
 
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -35,16 +35,18 @@ public class AdStatisticsByGeo {
             }
         });
 
-//        dataStream.keyBy(ad -> {
-//            return new Tuple2(ad.getUserId(),ad.getAdId());
-//        }).process(new FilterBlackListUser())
+        // 每天点击超过一定数目的人再继续点击不计入总数
+        SingleOutputStreamOperator<AdClickEvent> filterStream = dataStream.keyBy("userId","adId")
+                .process(new FilterBlackListUser(100L, blackListWarningOutputTag));
 
         //获取每个省份的广告点击量
-        SingleOutputStreamOperator<CountByProvince> provinceAgg = dataStream.keyBy(AdClickEvent::getProvince)
+        SingleOutputStreamOperator<CountByProvince> provinceAgg = filterStream.keyBy(AdClickEvent::getProvince)
                 .timeWindow(Time.hours(1), Time.seconds(10))    //每10S计算过去一小时的广告点击
                 .aggregate(new CountAgg(), new CountWindowFunction());
+//                .keyBy(data -> data.getWindowEnd());
 
         provinceAgg.print("Province Count");
+        filterStream.getSideOutput(blackListWarningOutputTag).print("blackList");
 
         env.execute("ad statistics job");
     }
